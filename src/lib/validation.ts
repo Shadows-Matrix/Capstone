@@ -58,6 +58,19 @@ export const reviewCreateSchema = z.object({
   comment: z.string().max(1000).optional(),
 });
 
+// ---------- OTP ----------
+export const otpRequestSchema = z.object({
+  email: z.string().email("Enter a valid email address"),
+  password: z.string().min(1, "Password is required"),
+});
+
+export const otpVerifySchema = z.object({
+  challengeId: z.string().min(1, "Challenge is required"),
+  code: z
+    .string()
+    .regex(/^\d{6}$/, "Enter the 6-digit code"),
+});
+
 // ---------- Recommendations ----------
 export const recommendationQuerySchema = z
   .object({

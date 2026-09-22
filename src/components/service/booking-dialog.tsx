@@ -19,6 +19,7 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Textarea } from "@/components/ui/textarea";
 import { apiFetch } from "@/lib/api-client";
+import { formatCurrency } from "@/lib/utils";
 import type { BookingDto } from "@/types";
 
 export function BookingDialog({
@@ -66,7 +67,7 @@ export function BookingDialog({
     <Dialog open={open} onOpenChange={setOpen}>
       <DialogTrigger asChild>
         <Button size="lg" className="w-full">
-          Book now — ${price}
+          Book now — {formatCurrency(price)}
         </Button>
       </DialogTrigger>
       <DialogContent className="sm:max-w-md">

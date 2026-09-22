@@ -42,6 +42,8 @@ model User {
   notifications   Notification[]
   complaints      Complaint[]      @relation("FiledComplaints")
   auditLogs       AuditLog[]
+  otpChallenges   OtpChallenge[]
+  loginGrants     LoginGrant[]
 }
 
 model ProviderProfile {
@@ -198,4 +200,28 @@ model AuditLog {
 
   @@index([userId])
   @@index([entity])
+}
+
+model OtpChallenge {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  codeHash  String
+  expiresAt DateTime
+  attempts  Int      @default(0)
+  createdAt DateTime @default(now())
+
+  @@index([userId])
+}
+
+model LoginGrant {
+  id        String    @id @default(cuid())
+  userId    String
+  user      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
+
+  @@index([userId])
 }
