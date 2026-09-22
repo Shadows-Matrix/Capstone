@@ -23,13 +23,23 @@ function safeEqualHex(a: string, b: string) {
 }
 
 /**
- * Delivery point for the one-time code.
- * No SMS provider is configured, so the code is logged server-side and —
- * in non-production only — echoed back to the caller so the demo is usable.
- * Swap this body for Twilio/MSG91/etc. to send real SMS messages.
+ * Delivery of the one-time code.
+ * Sends a real email when SMTP is configured; otherwise falls back to the
+ * server log + dev code so local development still works. To send real SMS
+ * instead, swap this body for Twilio/MSG91/etc.
  */
 async function sendOtpCode(destination: string, code: string) {
-  console.log(`[OTP] code for ${destination}: ${code}`);
+  const { mailConfigured, sendMail, otpEmailHtml } = await import("@/lib/mailer");
+  if (mailConfigured) {
+    await sendMail(
+      destination,
+      "Your SERVEX verification code",
+      otpEmailHtml(code),
+      `Your SERVEX verification code is ${code}. It expires in 10 minutes.`
+    );
+    return;
+  }
+  console.log(`[OTP] SMTP not configured — code for ${destination}: ${code}`);
 }
 
 export const otpService = {

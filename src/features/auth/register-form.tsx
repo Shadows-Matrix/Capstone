@@ -3,7 +3,6 @@
 import { useForm } from "react-hook-form";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { z } from "zod";
-import { signIn } from "next-auth/react";
 import { useRouter, useSearchParams } from "next/navigation";
 import { useState } from "react";
 import { toast } from "sonner";
@@ -44,10 +43,6 @@ const schema = z
 
 type RegisterValues = z.infer<typeof schema>;
 
-function dashboardFor(role: "CUSTOMER" | "PROVIDER") {
-  return role === "PROVIDER" ? "/provider" : "/customer";
-}
-
 export function RegisterForm() {
   const router = useRouter();
   const params = useSearchParams();
@@ -66,11 +61,14 @@ export function RegisterForm() {
         method: "POST",
         body: JSON.stringify(values),
       });
-      const result = await signIn("credentials", { redirect: false, email: values.email, password: values.password });
-      if (result?.error) throw new Error("Account created, but auto sign-in failed. Please log in.");
-      toast.success("Welcome to SERVEX!");
-      router.push(params.get("callbackUrl") || dashboardFor(values.role));
-      router.refresh();
+      // New customers/providers verify via OTP at login — send them there
+      // with their email prefilled instead of a password auto-sign-in.
+      toast.success("Account created! Sign in to verify with OTP.");
+      const loginUrl = new URL("/login", window.location.origin);
+      loginUrl.searchParams.set("email", values.email);
+      const callbackUrl = params.get("callbackUrl");
+      if (callbackUrl) loginUrl.searchParams.set("callbackUrl", callbackUrl);
+      router.push(loginUrl.pathname + loginUrl.search);
     } catch (err) {
       setError(err instanceof Error ? err.message : "Registration failed");
     }
