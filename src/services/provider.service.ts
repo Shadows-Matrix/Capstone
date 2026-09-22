@@ -45,12 +45,12 @@ function toListItem(row: ProfileRow, offeringsCount: number): ProviderListItem {
 export const providerService = {
   async list(filter: { q?: string; city?: string; page: number; pageSize: number }) {
     const where = {
-      ...(filter.city ? { city: { equals: filter.city, mode: "insensitive" as const } } : {}),
+      ...(filter.city ? { city: filter.city } : {}),
       ...(filter.q
         ? {
             OR: [
-              { user: { name: { contains: filter.q, mode: "insensitive" as const } } },
-              { bio: { contains: filter.q, mode: "insensitive" as const } },
+              { user: { name: { contains: filter.q } } },
+              { bio: { contains: filter.q } },
             ],
           }
         : {}),

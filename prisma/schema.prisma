@@ -6,7 +6,7 @@ generator client {
 }
 
 datasource db {
-  provider = "postgresql"
+  provider = "mysql"
   url      = env("DATABASE_URL")
 }
 
@@ -50,7 +50,7 @@ model ProviderProfile {
   id              String  @id @default(cuid())
   userId          String  @unique
   user            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
-  bio             String?
+  bio             String? @db.Text
   city            String
   area            String?
   basePrice       Float   @default(0)
@@ -69,7 +69,7 @@ model ServiceCategory {
   id          String  @id @default(cuid())
   name        String  @unique
   slug        String  @unique
-  description String?
+  description String? @db.Text
   icon        String?
 
   offerings ServiceOffering[]
@@ -82,7 +82,7 @@ model ServiceOffering {
   categoryId   String
   category     ServiceCategory @relation(fields: [categoryId], references: [id])
   title        String
-  description  String
+  description  String   @db.Text
   price        Float
   durationMins Int      @default(60)
   imageUrl     String?
@@ -106,8 +106,8 @@ model Booking {
   serviceId   String
   service     ServiceOffering @relation(fields: [serviceId], references: [id])
   scheduledAt DateTime
-  address     String
-  notes       String?
+  address     String   @db.Text
+  notes       String?  @db.Text
   totalAmount Float
   status      BookingStatus @default(PENDING)
   createdAt   DateTime      @default(now())
@@ -132,7 +132,7 @@ model Review {
   providerId String
   provider   ProviderProfile @relation(fields: [providerId], references: [id], onDelete: Cascade)
   rating     Int
-  comment    String?
+  comment    String?  @db.Text
   createdAt  DateTime @default(now())
 
   @@index([providerId])
@@ -162,7 +162,7 @@ model Notification {
   bookingId String?
   booking   Booking? @relation(fields: [bookingId], references: [id], onDelete: SetNull)
   title     String
-  message   String
+  message   String   @db.Text
   type      String   @default("info") // info, success, warning
   read      Boolean  @default(false)
   createdAt DateTime @default(now())
@@ -177,8 +177,8 @@ model Complaint {
   filedBy     User     @relation("FiledComplaints", fields: [filedById], references: [id], onDelete: Cascade)
   providerId  String
   provider    ProviderProfile @relation(fields: [providerId], references: [id])
-  subject     String
-  description String
+  subject     String   @db.Text
+  description String   @db.Text
   status      String   @default("OPEN") // OPEN, IN_REVIEW, RESOLVED, DISMISSED
   createdAt   DateTime @default(now())
   updatedAt   DateTime @updatedAt
@@ -195,7 +195,7 @@ model AuditLog {
   action    String
   entity    String
   entityId  String?
-  details   String?
+  details   String?  @db.Text
   createdAt DateTime @default(now())
 
   @@index([userId])
