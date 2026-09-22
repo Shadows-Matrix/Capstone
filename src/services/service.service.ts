@@ -40,7 +40,7 @@ function toServiceListItem(offering: NonNullable<OfferingRow>): ServiceListItem 
 async function resolveCategoryFilter(category?: string): Promise<{ categoryId?: string }> {
   if (!category) return {};
   const found = await prisma.serviceCategory.findFirst({
-    where: { OR: [{ slug: category }, { name: category }] },
+    where: { OR: [{ slug: category }, { name: { equals: category, mode: "insensitive" } }] },
     select: { id: true },
   });
   // Unknown category matches nothing rather than everything
@@ -53,9 +53,9 @@ function buildWhere(filter: ServiceFilter) {
     ...filter.q
       ? {
           OR: [
-            { title: { contains: filter.q } },
-            { description: { contains: filter.q } },
-            { provider: { user: { name: { contains: filter.q } } } },
+            { title: { contains: filter.q, mode: "insensitive" as const } },
+            { description: { contains: filter.q, mode: "insensitive" as const } },
+            { provider: { user: { name: { contains: filter.q, mode: "insensitive" as const } } } },
           ],
         }
       : {},
@@ -65,7 +65,7 @@ function buildWhere(filter: ServiceFilter) {
 export const serviceService = {
   async list(filter: ServiceFilter): Promise<ServiceListResult> {
     const categoryClause = await resolveCategoryFilter(filter.category);
-    const cityClause = filter.city ? { provider: { city: filter.city } } : {};
+    const cityClause = filter.city ? { provider: { city: { equals: filter.city, mode: "insensitive" as const } } } : {};
     const base = buildWhere(filter);
     const where = { ...base, ...categoryClause, ...cityClause };
 
