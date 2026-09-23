@@ -6,11 +6,13 @@ import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { RatingStars } from "@/components/common/rating-stars";
+import { LocationMap } from "@/components/common/location-map";
 import { BookingDialog } from "@/components/service/booking-dialog";
 import { ServiceCard } from "@/components/service/service-card";
 import { serviceService } from "@/services/service.service";
 import { recommendationService } from "@/services/recommendation.service";
 import { reviewRepository } from "@/repositories/review.repository";
+import { geocode } from "@/lib/geocode";
 import { formatCurrency } from "@/lib/utils";
 import type { ServiceListItem } from "@/types";
 
@@ -39,11 +41,14 @@ export default async function ServiceDetailPage({
   const service = await serviceService.getById(id).catch(() => null);
   if (!service) notFound();
 
-  const [recommendations, reviews] = await Promise.all([
+  const [recommendations, reviews, location] = await Promise.all([
     recommendationService
       .recommend({ serviceId: id, city: service.provider.city, limit: 3 })
       .catch(() => []),
     reviewRepository.listByProvider(service.provider.id).catch(() => []),
+    geocode(
+      [service.provider.area, service.provider.city].filter(Boolean).join(", ")
+    ).catch(() => ({ lat: 21.1, lng: 78.0, label: service.provider.city })),
   ]);
 
   return (
@@ -129,6 +134,15 @@ export default async function ServiceDetailPage({
               <p className="mt-3 text-center text-xs text-muted-foreground">
                 Free cancellation before confirmation.
               </p>
+            </CardContent>
+          </Card>
+          <Card>
+            <CardContent className="p-5">
+              <p className="mb-2 text-sm font-semibold">Provider location</p>
+              <p className="mb-3 text-xs text-muted-foreground">
+                {service.provider.area ? `${service.provider.area}, ` : ""}{service.provider.city}
+              </p>
+              <LocationMap center={location} zoom={11} />
             </CardContent>
           </Card>
         </div>

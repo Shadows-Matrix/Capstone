@@ -6,8 +6,10 @@ import { Button } from "@/components/ui/button";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import { RatingStars } from "@/components/common/rating-stars";
+import { LocationMap } from "@/components/common/location-map";
 import { providerService } from "@/services/provider.service";
 import { reviewRepository } from "@/repositories/review.repository";
+import { geocode } from "@/lib/geocode";
 import { formatCurrency } from "@/lib/utils";
 import { MapPin, Briefcase, Clock } from "lucide-react";
 
@@ -37,6 +39,9 @@ export default async function ProviderDetailPage({
   if (!provider) notFound();
 
   const reviews = await reviewRepository.listByProvider(provider.id).catch(() => []);
+  const location = await geocode(
+    [provider.area, provider.city].filter(Boolean).join(", ")
+  ).catch(() => ({ lat: 21.1, lng: 78.0, label: provider.city }));
 
   return (
     <div className="mx-auto max-w-4xl px-4 py-8 sm:px-6">
@@ -78,6 +83,15 @@ export default async function ProviderDetailPage({
           </div>
         </CardContent>
       </Card>
+
+      <h2 className="mt-8 text-xl font-bold">Service area</h2>
+      <p className="mt-1 text-sm text-muted-foreground">
+        Based in {provider.area ? `${provider.area}, ` : ""}{provider.city}
+        {location.label !== provider.city ? ` · ${location.label}` : ""}.
+      </p>
+      <div className="mt-3">
+        <LocationMap center={location} />
+      </div>
 
       <h2 className="mt-8 text-xl font-bold">Services</h2>
       <div className="mt-4 grid gap-4 sm:grid-cols-2">
