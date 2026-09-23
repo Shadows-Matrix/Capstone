@@ -1,22 +1,8 @@
 import { z } from "zod";
 
-// ---------- Auth ----------
-export const loginSchema = z.object({
+// ---------- Auth (email OTP — passwordless for customers/providers) ----------
+export const emailSchema = z.object({
   email: z.string().email("Enter a valid email address"),
-  password: z.string().min(1, "Password is required"),
-});
-
-export const registerSchema = z.object({
-  name: z.string().min(2, "Name must be at least 2 characters").max(80),
-  email: z.string().email("Enter a valid email address"),
-  password: z
-    .string()
-    .min(8, "Password must be at least 8 characters")
-    .regex(/[A-Za-z]/, "Password must contain a letter")
-    .regex(/[0-9]/, "Password must contain a number"),
-  role: z.enum(["CUSTOMER", "PROVIDER"]),
-  phone: z.string().max(24).optional(),
-  city: z.string().max(80).optional(),
 });
 
 // ---------- Services ----------
@@ -61,7 +47,6 @@ export const reviewCreateSchema = z.object({
 // ---------- OTP ----------
 export const otpRequestSchema = z.object({
   email: z.string().email("Enter a valid email address"),
-  password: z.string().min(1, "Password is required"),
 });
 
 export const otpVerifySchema = z.object({
@@ -70,6 +55,21 @@ export const otpVerifySchema = z.object({
     .string()
     .regex(/^\d{6}$/, "Enter the 6-digit code"),
 });
+
+// Details collected from a verified-new email before account creation.
+export const signupCompleteSchema = z
+  .object({
+    signupToken: z.string().min(1, "Verification is required"),
+    name: z.string().min(2, "Name must be at least 2 characters").max(80),
+    role: z.enum(["CUSTOMER", "PROVIDER"]),
+    phone: z.string().max(24).optional(),
+    city: z.string().max(80).optional(),
+  })
+  .superRefine((data, ctx) => {
+    if (data.role === "PROVIDER" && !data.city?.trim()) {
+      ctx.addIssue({ code: "custom", path: ["city"], message: "City is required for provider accounts" });
+    }
+  });
 
 // ---------- Recommendations ----------
 export const recommendationQuerySchema = z

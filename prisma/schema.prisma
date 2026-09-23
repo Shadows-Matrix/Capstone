@@ -204,14 +204,17 @@ model AuditLog {
 
 model OtpChallenge {
   id        String   @id @default(cuid())
-  userId    String
-  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId    String?
+  user      User?    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  // Set when the email has no account yet (signup flow).
+  email     String?
   codeHash  String
   expiresAt DateTime
   attempts  Int      @default(0)
   createdAt DateTime @default(now())
 
   @@index([userId])
+  @@index([email])
 }
 
 model LoginGrant {
@@ -224,4 +227,13 @@ model LoginGrant {
   createdAt DateTime @default(now())
 
   @@index([userId])
+}
+
+model SignupProof {
+  id        String    @id @default(cuid())
+  email     String    @unique
+  tokenHash String    @unique
+  expiresAt DateTime
+  usedAt    DateTime?
+  createdAt DateTime @default(now())
 }

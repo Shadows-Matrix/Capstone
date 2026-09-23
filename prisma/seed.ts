@@ -45,9 +45,9 @@ async function main() {
 
   // ----- Customers -----
   const customerData = [
-    ["John Carter", "john@example.com", "+1 212 555 0142", "New York"],
-    ["Maria Gomez", "maria@example.com", "+1 415 555 0197", "San Francisco"],
-    ["David Kim", "david@example.com", "+1 312 555 0126", "Chicago"],
+    ["Arjun Mehta", "arjun@example.com", "+91 98200 12345", "Mumbai"],
+    ["Priya Nair", "priya@example.com", "+91 98470 23456", "Bengaluru"],
+    ["Rahul Sharma", "rahul@example.com", "+91 98110 34567", "Delhi"],
   ] as const;
   const customers = await Promise.all(
     customerData.map(([name, email, phone, city]) =>
@@ -59,20 +59,20 @@ async function main() {
 
   // ----- Providers -----
   const providerData = [
-    ["Alice Anderson", "alice@servexpro.com", "New York", "Queens", "Deep-cleaning specialist with 5+ years of residential experience.", 60, 5, 350],
-    ["Bob Bennett", "bob@servexpro.com", "New York", "Brooklyn", "Licensed plumber handling leaks, drain issues and water heaters.", 75, 8, 520],
-    ["Carol Chen", "carol@servexpro.com", "San Francisco", "Mission District", "Certified electrician for safe home wiring and upgrades.", 90, 10, 410],
-    ["Daniel Diaz", "daniel@servexpro.com", "San Francisco", "Sunset", "HVAC technician — AC install and repair across the Bay.", 110, 7, 380],
-    ["Emma Evans", "emma@servexpro.com", "Austin", "South Congress", "Interior painter who loves bold, tidy finishes.", 70, 4, 300],
-    ["Frank Foster", "frank@servexpro.com", "Chicago", "Lincoln Park", "Eco-friendly pest control for homes and small offices.", 65, 6, 280],
-    ["Grace Green", "grace@servexpro.com", "Seattle", "Capitol Hill", "Appliance repair expert for fridges, washers and dryers.", 85, 9, 460],
-    ["Henry Hall", "henry@servexpro.com", "Miami", "Coconut Grove", "Landscaper and gardener — lawns, hedges and seasonal plantings.", 80, 6, 340],
+    ["Asha Iyer", "asha@servexpro.com", "Mumbai", "Andheri West", "Deep-cleaning specialist with 5+ years of residential experience.", 1400, 5, 350],
+    ["Bharat Kumar", "bharat@servexpro.com", "Mumbai", "Bandra", "Licensed plumber handling leaks, drain issues and water heaters.", 950, 8, 520],
+    ["Chetan Rao", "chetan@servexpro.com", "Bengaluru", "Koramangala", "Certified electrician for safe home wiring and upgrades.", 1800, 10, 410],
+    ["Deepak Yadav", "deepak@servexpro.com", "Bengaluru", "Whitefield", "AC technician — split and window AC install and repair.", 1500, 7, 380],
+    ["Esha Patel", "esha@servexpro.com", "Hyderabad", "Banjara Hills", "Interior painter who loves bold, tidy finishes.", 2200, 4, 300],
+    ["Farhan Khan", "farhan@servexpro.com", "Delhi", "Karol Bagh", "Eco-friendly pest control for homes and small offices.", 1300, 6, 280],
+    ["Geeta Menon", "geeta@servexpro.com", "Chennai", "Anna Nagar", "Appliance repair expert for fridges, washers and dryers.", 1200, 9, 460],
+    ["Harish Nambiar", "harish@servexpro.com", "Kochi", "Fort Kochi", "Landscaper and gardener — lawns, hedges and seasonal plantings.", 1100, 6, 340],
   ] as const;
 
   const providers: { user: User; profile: ProviderProfile }[] = [];
   for (const [name, email, city, area, bio, basePrice, xp, jobs] of providerData) {
     const user = await prisma.user.create({
-      data: { name, email, passwordHash, role: Role.PROVIDER, city, phone: `+1 917 555 01${providers.length}` },
+      data: { name, email, passwordHash, role: Role.PROVIDER, city, phone: `+91 98765 4321${providers.length}` },
     });
     const profile = await prisma.providerProfile.create({
       data: { userId: user.id, bio, city, area, basePrice, yearsExperience: xp, completedJobs: jobs },
@@ -83,14 +83,14 @@ async function main() {
 
   // ----- Offerings (one per provider within their category) -----
   const offeringSpecs = [
-    [0, "house-cleaning", "Deep Home Cleaning", "Thorough 3-hour deep clean of up to 2 bedrooms, 2 baths: kitchen degrease, bathrooms, floors, vacuum and dust.", 140, 180],
-    [1, "plumbing", "Leak Repair & Pipe Fix", "Diagnose and repair leaks, dripping taps and burst pipes with a 30-day workmanship guarantee.", 95, 90],
-    [2, "electrical", "Home Wiring & Panel Upgrade", "Safe rewiring, outlet installation and circuit breaker panel upgrades with permit support.", 180, 240],
-    [3, "ac-repair", "AC Installation & Servicing", "Split/central AC installation, gas top-up, coil cleaning and seasonal servicing.", 150, 120],
-    [4, "painting", "Interior Room Painting", "Two-coat premium emulsion painting for one medium room including wall prep and cleanup.", 220, 300],
-    [5, "pest-control", "Home Pest Control", "Cockroach, ant and rodent treatment with child- and pet-safe products. Quarterly plans available.", 130, 90],
-    [6, "appliance-repair", "Refrigerator & Washer Repair", "On-site repair for fridges, washing machines and dishwashers with genuine parts.", 120, 120],
-    [7, "landscaping", "Garden Maintenance Package", "Lawn mowing, hedge trimming, weeding and seasonal cleanup for medium-sized yards.", 110, 180],
+    [0, "house-cleaning", "Deep Home Cleaning", "Thorough 3-hour deep clean of up to 2 bedrooms, 2 baths: kitchen degrease, bathrooms, floors, vacuum and dust.", 1400, 180],
+    [1, "plumbing", "Leak Repair & Pipe Fix", "Diagnose and repair leaks, dripping taps and burst pipes with a 30-day workmanship guarantee.", 950, 90],
+    [2, "electrical", "Home Wiring & Panel Upgrade", "Safe rewiring, outlet installation and circuit breaker panel upgrades.", 1800, 240],
+    [3, "ac-repair", "AC Installation & Servicing", "Split/window AC installation, gas top-up, coil cleaning and seasonal servicing.", 1500, 120],
+    [4, "painting", "Interior Room Painting", "Two-coat premium emulsion painting for one medium room including wall prep and cleanup.", 2200, 300],
+    [5, "pest-control", "Home Pest Control", "Cockroach, ant and rodent treatment with child- and pet-safe products. Quarterly plans available.", 1300, 90],
+    [6, "appliance-repair", "Refrigerator & Washer Repair", "On-site repair for fridges, washing machines and dishwashers with genuine parts.", 1200, 120],
+    [7, "landscaping", "Garden Maintenance Package", "Lawn mowing, hedge trimming, weeding and seasonal cleanup for medium-sized yards.", 1100, 180],
   ] as const;
 
   const offerings = [];
@@ -108,18 +108,18 @@ async function main() {
 
   const bookingSpecs = [
     // [customerIdx, offeringIdx, status, daysFromNow, address, notes, review?]
-    [0, 0, "COMPLETED", -3, "221B Hull Street, New York", "Pets at home, please check before entering.", true],
-    [0, 1, "IN_PROGRESS", 0, "221B Hull Street, New York", "Kitchen sink leaking under the counter.", false],
-    [0, 6, "PENDING", 1, "221B Hull Street, New York", "Washing machine not spinning.", false],
-    [1, 2, "COMPLETED", -5, "12 Valencia Way, San Francisco", "Wants a quote for a full panel upgrade too.", true],
-    [1, 3, "CONFIRMED", 2, "12 Valencia Way, San Francisco", "Two window units to service.", false],
-    [1, 4, "PENDING", 3, "12 Valencia Way, San Francisco", "Living room only.", false],
-    [2, 5, "COMPLETED", -1, "900 W Fullerton Ave, Chicago", "Cockroaches in the kitchen.", true],
-    [2, 7, "CANCELLED", 2, "900 W Fullerton Ave, Chicago", "Schedule conflict — will rebook.", false],
-    [2, 0, "PENDING", 1, "900 W Fullerton Ave, Chicago", "Move-in clean for a 1BR.", false],
-    [1, 5, "CONFIRMED", 4, "12 Valencia Way, San Francisco", "Quarterly pest plan, first visit.", false],
-    [0, 3, "COMPLETED", -8, "221B Hull Street, New York", "AC not cooling below 26C.", true],
-    [2, 2, "IN_PROGRESS", 0, "900 W Fullerton Ave, Chicago", "Outlets flickering in two rooms.", false],
+    [0, 0, "COMPLETED", -3, "14 MG Road, Andheri West, Mumbai", "Pets at home, please check before entering.", true],
+    [0, 1, "IN_PROGRESS", 0, "14 MG Road, Andheri West, Mumbai", "Kitchen sink leaking under the counter.", false],
+    [0, 6, "PENDING", 1, "14 MG Road, Andheri West, Mumbai", "Washing machine not spinning.", false],
+    [1, 2, "COMPLETED", -5, "22 100 Feet Road, Koramangala, Bengaluru", "Wants a quote for a full panel upgrade too.", true],
+    [1, 3, "CONFIRMED", 2, "22 100 Feet Road, Koramangala, Bengaluru", "Two window units to service.", false],
+    [1, 4, "PENDING", 3, "22 100 Feet Road, Koramangala, Bengaluru", "Living room only.", false],
+    [2, 5, "COMPLETED", -1, "45 Ajmal Khan Road, Karol Bagh, Delhi", "Cockroaches in the kitchen.", true],
+    [2, 7, "CANCELLED", 2, "45 Ajmal Khan Road, Karol Bagh, Delhi", "Schedule conflict — will rebook.", false],
+    [2, 0, "PENDING", 1, "45 Ajmal Khan Road, Karol Bagh, Delhi", "Move-in clean for a 1BHK.", false],
+    [1, 5, "CONFIRMED", 4, "22 100 Feet Road, Koramangala, Bengaluru", "Quarterly pest plan, first visit.", false],
+    [0, 3, "COMPLETED", -8, "14 MG Road, Andheri West, Mumbai", "AC not cooling below 26C.", true],
+    [2, 2, "IN_PROGRESS", 0, "45 Ajmal Khan Road, Karol Bagh, Delhi", "Outlets flickering in two rooms.", false],
   ] as const;
 
   const statusKey = (s: string) => s as BookingStatus;
@@ -201,7 +201,7 @@ async function main() {
   console.log(`  offerings: ${offerings.length}`);
   console.log(`  bookings: ${createdBookings.length}`);
   console.log(`  auth: all seeded passwords are "${PASSWORD}"`);
-  console.log("  logins: john@example.com | alice@servexpro.com | admin@servex.com");
+  console.log("  logins: arjun@example.com | asha@servexpro.com | admin@servex.com");
 }
 
 main()
