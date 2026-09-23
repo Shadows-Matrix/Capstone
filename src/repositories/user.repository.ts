@@ -27,4 +27,12 @@ export const userRepository = {
   countAll() {
     return prisma.user.count();
   },
+
+  updateProfile(id: string, data: { name?: string; phone?: string | null; city?: string | null }) {
+    return prisma.user.update({
+      where: { id },
+      data,
+      select: { id: true, name: true, email: true, role: true, phone: true, city: true, avatarUrl: true },
+    });
+  },
 };

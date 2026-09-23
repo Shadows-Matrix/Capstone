@@ -159,7 +159,7 @@ export default async function HomePage() {
       )}
 
       {/* How it works */}
-      <section className="border-t bg-muted/40">
+      <section id="how-it-works" className="border-t bg-muted/40 scroll-mt-20">
         <div className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
           <h2 className="text-center text-2xl font-bold">How SERVEX works</h2>
           <div className="mt-8 grid gap-6 sm:grid-cols-3">
@@ -177,6 +177,26 @@ export default async function HomePage() {
               </div>
             ))}
           </div>
+        </div>
+      </section>
+
+      {/* Why choose SERVEX */}
+      <section className="mx-auto max-w-7xl px-4 py-12 sm:px-6">
+        <h2 className="text-center text-2xl font-bold">Why choose SERVEX?</h2>
+        <div className="mt-8 grid gap-4 sm:grid-cols-2 lg:grid-cols-3">
+          {[
+            { title: "Verified providers", text: "Real profiles, real reviews from real customers." },
+            { title: "Easy discovery", text: "Search by keyword, category, city or price — in seconds." },
+            { title: "Transparent pricing", text: "Clear rupee pricing upfront. No hidden charges." },
+            { title: "Request management", text: "Track every booking from request to completion." },
+            { title: "Secure experience", text: "OTP-verified accounts and protected dashboards." },
+            { title: "One platform", text: "Services, providers, bookings and messages in one place." },
+          ].map((f) => (
+            <div key={f.title} className="rounded-xl border bg-card p-5">
+              <h3 className="font-semibold">{f.title}</h3>
+              <p className="mt-1 text-sm text-muted-foreground">{f.text}</p>
+            </div>
+          ))}
         </div>
       </section>
 

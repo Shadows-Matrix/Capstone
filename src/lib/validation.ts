@@ -105,4 +105,6 @@ export const serviceFilterSchema = paginationSchema.extend({
   city: z.string().optional(),
   q: z.string().max(120).optional(),
   sort: z.enum(["price-asc", "price-desc", "rating", "newest"]).default("rating"),
+  minPrice: z.coerce.number().min(0).optional(),
+  maxPrice: z.coerce.number().min(0).optional(),
 });

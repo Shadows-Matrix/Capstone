@@ -44,6 +44,8 @@ model User {
   auditLogs       AuditLog[]
   otpChallenges   OtpChallenge[]
   loginGrants     LoginGrant[]
+  savedServices   SavedService[]
+  sentMessages    Message[]        @relation("SentMessages")
 }
 
 model ProviderProfile {
@@ -92,6 +94,8 @@ model ServiceOffering {
 
   bookings Booking[]
 
+  savedBy  SavedService[]
+
   @@index([categoryId])
   @@index([providerId])
   @@index([isActive])
@@ -116,6 +120,7 @@ model Booking {
   review   Review?
   payment  Payment?
   notifications Notification[]
+  messages Message[]
 
   @@index([customerId])
   @@index([providerId])
@@ -236,4 +241,29 @@ model SignupProof {
   expiresAt DateTime
   usedAt    DateTime?
   createdAt DateTime @default(now())
+}
+
+model SavedService {
+  id        String   @id @default(cuid())
+  userId    String
+  user      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+  serviceId String
+  service   ServiceOffering @relation(fields: [serviceId], references: [id], onDelete: Cascade)
+  createdAt DateTime @default(now())
+
+  @@unique([userId, serviceId])
+  @@index([userId])
+}
+
+model Message {
+  id        String   @id @default(cuid())
+  bookingId String
+  booking   Booking  @relation(fields: [bookingId], references: [id], onDelete: Cascade)
+  senderId  String
+  sender    User     @relation("SentMessages", fields: [senderId], references: [id], onDelete: Cascade)
+  text      String   @db.Text
+  createdAt DateTime @default(now())
+
+  @@index([bookingId])
+  @@index([senderId])
 }

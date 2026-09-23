@@ -4,6 +4,7 @@ import { Card, CardContent, CardFooter, CardHeader } from "@/components/ui/card"
 import { Badge } from "@/components/ui/badge";
 import { Button } from "@/components/ui/button";
 import { RatingStars } from "@/components/common/rating-stars";
+import { SaveButton } from "@/components/service/save-button";
 import { formatCurrency } from "@/lib/utils";
 import type { ServiceListItem } from "@/types";
 
@@ -34,6 +35,7 @@ export function ServiceCard({ service }: { service: ServiceListItem }) {
           <span className="font-medium text-foreground">{service.provider.name}</span>
           <span className="inline-flex items-center gap-1">
             <MapPin className="size-3.5" /> {service.provider.city}
+            <SaveButton serviceId={service.id} />
           </span>
         </div>
       </CardContent>

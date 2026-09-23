@@ -1,10 +1,12 @@
 "use client";
 
+import { useState } from "react";
 import { toast } from "sonner";
-import { Check, X, Play, Flag } from "lucide-react";
+import { Check, X, Play, Flag, MessageCircle } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Separator } from "@/components/ui/separator";
 import { BookingStatusBadge } from "@/components/booking/booking-status-badge";
+import { BookingChat } from "@/components/booking/booking-chat";
 import { ReviewDialog } from "@/components/booking/review-dialog";
 import { useUpdateBookingStatus } from "@/features/bookings/use-bookings";
 import { formatCurrency, formatDateTime } from "@/lib/utils";
@@ -18,6 +20,7 @@ export function BookingCard({
   viewerRole: Role;
 }) {
   const updateStatus = useUpdateBookingStatus();
+  const [showChat, setShowChat] = useState(false);
 
   async function transition(status: "CONFIRMED" | "CANCELLED" | "IN_PROGRESS" | "COMPLETED") {
     try {
@@ -112,7 +115,13 @@ export function BookingCard({
         {isCustomer && booking.status === "COMPLETED" && booking.hasReview && (
           <span className="text-sm text-muted-foreground">Reviewed ✓</span>
         )}
+        {booking.status !== "CANCELLED" && (
+          <Button size="sm" variant="ghost" onClick={() => setShowChat((v) => !v)}>
+            <MessageCircle className="mr-1 size-4" /> {showChat ? "Hide chat" : "Chat"}
+          </Button>
+        )}
       </div>
+      {showChat && <BookingChat bookingId={booking.id} />}
     </div>
   );
 }

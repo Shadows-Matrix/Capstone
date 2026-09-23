@@ -28,6 +28,8 @@ export default async function ServicesPage({
     city: stringify(raw.city) ?? undefined,
     sort: stringify(raw.sort) ?? "rating",
     page: stringify(raw.page) ?? "1",
+    minPrice: stringify(raw.minPrice) ?? undefined,
+    maxPrice: stringify(raw.maxPrice) ?? undefined,
   });
 
   const [result, categories, cities] = await Promise.all([
@@ -42,6 +44,8 @@ export default async function ServicesPage({
     if (filter.category) sp.set("category", filter.category);
     if (filter.city) sp.set("city", filter.city);
     if (filter.sort) sp.set("sort", filter.sort);
+    if (filter.minPrice !== undefined) sp.set("minPrice", String(filter.minPrice));
+    if (filter.maxPrice !== undefined) sp.set("maxPrice", String(filter.maxPrice));
     if (page > 1) sp.set("page", String(page));
     const qs = sp.toString();
     return `/services${qs ? `?${qs}` : ""}`;

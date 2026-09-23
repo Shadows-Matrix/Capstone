@@ -1,6 +1,6 @@
 import Link from "next/link";
 import { Tabs, TabsContent, TabsList, TabsTrigger } from "@/components/ui/tabs";
-import { LayoutDashboard, Wrench } from "lucide-react";
+import { LayoutDashboard, Wrench, CircleUserRound } from "lucide-react";
 import { requireRole } from "@/lib/session";
 
 export const dynamic = "force-dynamic";
@@ -22,6 +22,11 @@ export default async function ProviderLayout({ children }: { children: React.Rea
           <TabsTrigger value="services" asChild>
             <Link href="/provider/services" className="flex items-center gap-1.5">
               <Wrench className="size-4" /> Services
+            </Link>
+          </TabsTrigger>
+          <TabsTrigger value="profile" asChild>
+            <Link href="/provider/profile" className="flex items-center gap-1.5">
+              <CircleUserRound className="size-4" /> Profile
             </Link>
           </TabsTrigger>
         </TabsList>

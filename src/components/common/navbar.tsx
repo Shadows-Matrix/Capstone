@@ -2,7 +2,7 @@
 
 import Link from "next/link";
 import { useSession, signOut } from "next-auth/react";
-import { Wrench, LayoutDashboard, LogOut, Menu } from "lucide-react";
+import { Wrench, LayoutDashboard, LogOut, Menu, Heart, Bell, CircleUserRound } from "lucide-react";
 import { Button } from "@/components/ui/button";
 import { Avatar, AvatarFallback, AvatarImage } from "@/components/ui/avatar";
 import {
@@ -19,6 +19,9 @@ import { useState } from "react";
 const publicLinks = [
   { href: "/services", label: "Services" },
   { href: "/providers", label: "Providers" },
+  { href: "/#how-it-works", label: "How it works" },
+  { href: "/about", label: "About us" },
+  { href: "/contact", label: "Contact" },
 ];
 
 function dashboardHref(role?: string) {
@@ -73,6 +76,21 @@ export function Navbar() {
                 <DropdownMenuItem asChild>
                   <Link href={dashboardHref(role)}>
                     <LayoutDashboard className="mr-2 size-4" /> Dashboard
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/saved">
+                    <Heart className="mr-2 size-4" /> Saved services
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/notifications">
+                    <Bell className="mr-2 size-4" /> Notifications
+                  </Link>
+                </DropdownMenuItem>
+                <DropdownMenuItem asChild>
+                  <Link href="/profile">
+                    <CircleUserRound className="mr-2 size-4" /> Profile
                   </Link>
                 </DropdownMenuItem>
                 <DropdownMenuSeparator />

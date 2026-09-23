@@ -26,6 +26,8 @@ export function ServiceFilters({
   const params = useSearchParams();
   const [isPending, startTransition] = useTransition();
   const [q, setQ] = useState(params.get("q") ?? "");
+  const [minPrice, setMinPrice] = useState(params.get("minPrice") ?? "");
+  const [maxPrice, setMaxPrice] = useState(params.get("maxPrice") ?? "");
 
   function apply(next: Record<string, string | undefined>) {
     const sp = new URLSearchParams(params.toString());
@@ -100,11 +102,36 @@ export function ServiceFilters({
           <SelectItem value="newest">Newest</SelectItem>
         </SelectContent>
       </Select>
-      {(params.get("q") || params.get("category") || params.get("city")) && (
+      {(params.get("q") || params.get("category") || params.get("city") || params.get("minPrice") || params.get("maxPrice")) && (
         <Button variant="ghost" onClick={() => startTransition(() => router.push("/services"))}>
           Clear
         </Button>
       )}
+      <form
+        className="flex w-full gap-2 md:w-auto"
+        onSubmit={(e) => {
+          e.preventDefault();
+          apply({ minPrice: minPrice || undefined, maxPrice: maxPrice || undefined });
+        }}
+      >
+        <Input
+          value={minPrice}
+          onChange={(e) => setMinPrice(e.target.value.replace(/\D/g, ""))}
+          placeholder="Min ₹"
+          inputMode="numeric"
+          className="w-full md:w-24"
+        />
+        <Input
+          value={maxPrice}
+          onChange={(e) => setMaxPrice(e.target.value.replace(/\D/g, ""))}
+          placeholder="Max ₹"
+          inputMode="numeric"
+          className="w-full md:w-24"
+        />
+        <Button type="submit" variant="outline" size="icon" aria-label="Apply price filter">
+          ₹
+        </Button>
+      </form>
       {isPending && <span className="text-xs text-muted-foreground">Updating…</span>}
     </div>
   );

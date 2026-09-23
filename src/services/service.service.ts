@@ -12,7 +12,7 @@ export type ServiceFilter = z.infer<typeof serviceFilterSchema>;
 
 type OfferingRow = Awaited<ReturnType<typeof serviceRepository.findById>>;
 
-function toServiceListItem(offering: NonNullable<OfferingRow>): ServiceListItem {
+export function toServiceListItem(offering: NonNullable<OfferingRow>): ServiceListItem {
   const ratings = offering.provider.reviews;
   const ratingAvg = ratings.length === 0 ? 0 : ratings.reduce((a, r) => a + r.rating, 0) / ratings.length;
   return {
@@ -66,8 +66,17 @@ export const serviceService = {
   async list(filter: ServiceFilter): Promise<ServiceListResult> {
     const categoryClause = await resolveCategoryFilter(filter.category);
     const cityClause = filter.city ? { provider: { city: { equals: filter.city, mode: "insensitive" as const } } } : {};
+    const priceClause =
+      filter.minPrice !== undefined || filter.maxPrice !== undefined
+        ? {
+            price: {
+              ...(filter.minPrice !== undefined ? { gte: filter.minPrice } : {}),
+              ...(filter.maxPrice !== undefined ? { lte: filter.maxPrice } : {}),
+            },
+          }
+        : {};
     const base = buildWhere(filter);
-    const where = { ...base, ...categoryClause, ...cityClause };
+    const where = { ...base, ...categoryClause, ...cityClause, ...priceClause };
 
     if (filter.sort === "rating") {
       // Aggregate ratings cannot be ordered at the DB level — sort in memory.
