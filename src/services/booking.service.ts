@@ -1,4 +1,5 @@
 ﻿import { ApiError } from "@/lib/api";
+import { prisma } from "@/lib/prisma";
 import { bookingRepository } from "@/repositories/booking.repository";
 import { providerRepository } from "@/repositories/provider.repository";
 import { serviceRepository } from "@/repositories/service.repository";
@@ -81,7 +82,27 @@ export const bookingService = {
       address: input.address,
       notes: input.notes,
       totalAmount: offering.price,
-      status: "PENDING",
+      status: "CONFIRMED",
+    });
+
+    // Auto-confirmed on booking: notify both sides.
+    await prisma.notification.createMany({
+      data: [
+        {
+          userId: customerId,
+          bookingId: created.id,
+          title: "Service booked",
+          message: `You have booked "${offering.title}". Your booking is confirmed.`,
+          type: "success",
+        },
+        {
+          userId: offering.provider.userId,
+          bookingId: created.id,
+          title: "New confirmed booking",
+          message: `A customer booked "${offering.title}". Please prepare for the scheduled visit.`,
+          type: "info",
+        },
+      ],
     });
     return toDto(created as BookingDetailRow);
   },

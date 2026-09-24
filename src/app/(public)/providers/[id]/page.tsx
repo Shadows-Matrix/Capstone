@@ -68,7 +68,7 @@ export default async function ProviderDetailPage({
                 <Badge variant="secondary">Busy</Badge>
               )}
             </div>
-            <RatingStars rating={provider.ratingAvg} count={provider.ratingCount} className="mt-2" />
+            <RatingStars rating={provider.ratingAvg} count={provider.ratingCount} className="mt-2" href="#reviews" />
             <div className="mt-3 flex flex-wrap gap-x-5 gap-y-1 text-sm text-muted-foreground">
               <span className="inline-flex items-center gap-1">
                 <MapPin className="size-4" /> {provider.city}
@@ -125,7 +125,7 @@ export default async function ProviderDetailPage({
 
       {reviews.length > 0 && (
         <>
-          <h2 className="mt-10 text-xl font-bold">Reviews</h2>
+          <h2 id="reviews" className="mt-10 scroll-mt-24 text-xl font-bold">Reviews</h2>
           <div className="mt-4 space-y-4">
             {reviews.map((r) => (
               <Card key={r.id}>

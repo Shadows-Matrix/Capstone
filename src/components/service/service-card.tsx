@@ -30,7 +30,7 @@ export function ServiceCard({ service }: { service: ServiceListItem }) {
       </CardHeader>
       <CardContent className="flex-1 space-y-3">
         <p className="line-clamp-2 text-sm text-muted-foreground">{service.description}</p>
-        <RatingStars rating={service.provider.ratingAvg} count={service.provider.ratingCount} />
+        <RatingStars rating={service.provider.ratingAvg} count={service.provider.ratingCount} href={`/services/${service.id}#reviews`} />
         <div className="flex items-center justify-between text-sm text-muted-foreground">
           <span className="font-medium text-foreground">{service.provider.name}</span>
           <span className="inline-flex items-center gap-1">

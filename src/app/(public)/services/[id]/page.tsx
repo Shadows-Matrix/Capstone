@@ -74,7 +74,7 @@ export default async function ServiceDetailPage({
                 )}
               </div>
               <CardTitle className="text-2xl font-bold leading-tight">{service.title}</CardTitle>
-              <RatingStars rating={service.provider.ratingAvg} count={service.provider.ratingCount} />
+              <RatingStars rating={service.provider.ratingAvg} count={service.provider.ratingCount} href="#reviews" />
             </CardHeader>
             <CardContent className="space-y-4">
               <p className="text-muted-foreground">{service.description}</p>
@@ -98,7 +98,7 @@ export default async function ServiceDetailPage({
           </Card>
 
           {reviews.length > 0 && (
-            <Card>
+            <Card id="reviews" className="scroll-mt-24">
               <CardHeader>
                 <CardTitle className="text-lg">Customer reviews</CardTitle>
               </CardHeader>

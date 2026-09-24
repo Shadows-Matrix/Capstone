@@ -67,6 +67,7 @@ export function LoginForm({
 
   // Signup details step (verified-new email).
   const [signupToken, setSignupToken] = useState<string | null>(null);
+  const [rolePicked, setRolePicked] = useState(false);
 
   const emailForm = useForm<z.infer<typeof emailSchema>>({
     resolver: zodResolver(emailSchema),
@@ -177,6 +178,7 @@ export function LoginForm({
       } else {
         setEmail(res.email);
         setSignupToken(res.signupToken);
+        setRolePicked(false);
         setChallengeId(null);
       }
     } catch (err) {

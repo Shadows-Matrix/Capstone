@@ -6,6 +6,7 @@ export const serviceRepository = {
     provider: {
       select: {
         id: true,
+        userId: true,
         city: true,
         area: true,
         isAvailable: true,
